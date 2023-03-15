@@ -1,50 +1,41 @@
 # docker-influxdb-grafana-nodered-mqtt
 
-A docker-compose application that combines the influxdb, grafana, nodered and mqtt.
+Un script docker-compose que incluye influxdb, grafana, nodered y mqtt solo con fines de prueba y enseñanza.
 
-## Configuring and starting containers (only run once initially)
-On the the first run use the -c option to initially configure the images. 
-```
-./run.sh -c
-```
-This will prompt for a an admin username and password for the influxdb database. Ensure that the __INFLUXDB_HTTP_AUTH_ENABLED__ variable is set to false in the **influxdb.env** file, otherwise the script will not be able to create the user. Once the configuration is done this variable can be set back to true and the containers restarted. Then you can login to influxd with your admin password and username.
+## Configuración e inicio de contenedores
 
-## Starting the containers 
+Una vez clonado el repositorio en su máquina virtual Ubuntu, ejecute el siguiente comando para descargar las imagenes y levantar los contenedores.
+
 ```bash
-./run.sh
+docker-compose up -d
 ```
 
-## Stopping the containers
+## Acceder a las aplicaciones
+
+NOTA: antes de poder acceder a las aplicaciones necesita abrir los puertos en VirtualBox.
+Para aceder a Node-RED en su buscador web ingrese la siguiente URL:
+http://localhost:1880/
+
+## Configuration
+
+### Configuración de InfluxDB
+
+La configuración se puede realizar con el archivo influxdb.env (opcional).
+Para aceder a InfluxDB en su buscador web ingrese la siguiente URL:
+http://localhost:8086/
+Al acceder le pedirá crear lo siguiente: Organization, Bucket y Measurement, asi mismo debe crear un API Token para poder usarlo en Node-RED y Grafana.
+
+### Configuración de Grafana
+
+La configuración se realiza en el archivo grafana.env (opcional).
+Para aceder a Grafana en su buscador web ingrese la siguiente URL:
+http://localhost:3000/
+Para conectar Grfana a la base de datos influxdb, se puede usar el nombre de host 'influxdb': http://influxdb:8086 y el API Token creado anteriormente.
+
+## Detención de los contenedores
+
+Una vez terminada la práctica deberá detener los contenedores en su máquina virtual, utilice el siguiente comando para esto.
+
 ```bash
 docker-compose down
 ```
-
-## Backing up containers
-```bash
-./backup.sh
-```
-Will create a backups folder with the container configurations and data.
-
-## Restoring containers
-```bash
-./restore_backup.sh
-```
-Will restore the container configurations and data from the backups folder.
-
-## Configuration
-### InfluxDB config 
-Configuration can be done with the influxdb.env file.
-
-### Grafana config
-Configuration is done in the grafana.env file.
-To connect it to the influxdb database the 'influxdb' hostname can be used: http://influxdb:8086
-
-### Node-red
-Node red configuration has to be done in the docker volume itself.
-
-### MQTT
-The mosquitto configuration has to be done in the docker volume itself.
-
-## TODO
-- Add node-red password setup to the run.sh script
-- Automate influxdb configuration in run script
